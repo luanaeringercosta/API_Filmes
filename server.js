@@ -4,6 +4,9 @@ const app = express(); //Criando o servidor usando o express
 //Estrutura:  servidor.verbo("caminho", (req, res) => {Função} )
 //req entra no servidor.
 //res sai do servidor
+
+app.use(express.json()); //Middleware fica entre a requisição e a resposta, ele interpreta no formato JSON
+
 app.get("/", (req, res) => {
   res.send("API de Filmes");
 });
@@ -54,27 +57,62 @@ app.get("/filmes", (req, res) => {
   res.json(filmes);
 });
 
-//Verbo POST é usado para enviar dados do cliente para o servidor
-app.post("/filmes", (req, res) => {
-  //Criar um novo filme (objeto)
-  const novoFilme = {
-    id: filmes.length + 1, //Gerando um ID automático baseado no tamanho da array filmes
-    titulo: "Olhos Famintos",
-    genero: "Terror",
-  };
-  filmes.push(novoFilme); //método para adicionar o filme no final da array
-  res.json(novoFilme);
+
+
+
+//------Parametros de rotas
+//o id vem da url. Tudo que vem da url vem como texto (string)
+
+app.get( "/filmes/:id", (req, res) => {
+  const idQueFoiPegoNaURL = Number (req.params.id); //essa variavel serve para guardar os ids e tbm converter a string para um valor numerico.
+
+  const filmeEncontrado = filmes.find(
+    (filmes) => filmes.id === idQueFoiPegoNaURL )
+
+    //retorne em formato JSON
+
+    res.json(filmeEncontrado);
+
 });
+
+//----Cadastrando umm novo filme
+
+app.post("/filmes", (req,res) => {
+  //adicionar um objeto no final do array filmes
+
+  filmes.push(req.body)
+  res.send("Filme Cadastrado com Sucesso!") //envia uma msg confirmando o cadastro
+});
+
+
+//----Postman é uma ferramenta utilizada para testar requisições. Conseguimos simular o que o front faria.
+
+
+
+
+
 
 //console.log(filmes)
 //-------------------Gambiarra do bem , fins didáticos-------------
-app.get("/criar-filme", (req, res) => {
-  const novoFilmeTeste = {
-    id: filmes.length + 1,
-    titulo: "Faces da Morte",
-    genero: "Terror",
-  };
-  filmes.push(novoFilmeTeste);
-  res.json(novoFilmeTeste);
-});
+//app.get("/criar-filme", (req, res) => {
+  //const novoFilmeTeste = {
+   // id: filmes.length + 1,
+    //titulo: "Faces da Morte",
+    //genero: "Terror",
+  //};
+  //filmes.push(novoFilmeTeste);
+  //res.json(novoFilmeTeste);
+//});
 
+
+//Verbo POST é usado para enviar dados do cliente para o servidor
+//app.post("/filmes", (req, res) => {
+  //Criar um novo filme (objeto)
+  //const novoFilme = {
+    //id: filmes.length + 1, //Gerando um ID automático baseado no tamanho da array filmes
+    //titulo: "Olhos Famintos",
+    //genero: "Terror",
+ // };
+  //filmes.push(novoFilme); //método para adicionar o filme no final da //array
+  //res.json(novoFilme);
+//});
